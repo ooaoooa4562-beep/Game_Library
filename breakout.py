@@ -1,5 +1,6 @@
 """Breakout: bounce the ball and destroy every brick."""
 import pygame
+from game_art import draw_paddle, draw_ball, draw_brick
 
 WIDTH, HEIGHT = 720, 560
 
@@ -35,11 +36,11 @@ def main():
             lives -= 1; ball.center = (WIDTH//2,HEIGHT//2); velocity=[4,-4]
             if lives<=0: running=False
         screen.fill((12,16,32))
-        pygame.draw.rect(screen,(80,210,240),paddle,border_radius=7)
-        pygame.draw.ellipse(screen,(255,235,100),ball)
+        draw_paddle(screen,paddle)
+        draw_ball(screen,ball)
         for i,brick in enumerate(bricks):
             color=(230,90+i%4*35,90)
-            pygame.draw.rect(screen,color,brick,border_radius=4)
+            draw_brick(screen,brick,color)
         screen.blit(font.render(f"Score: {score}   Lives: {lives}",True,(245,245,245)),(12,12))
         if not bricks: running=False
         pygame.display.flip()
