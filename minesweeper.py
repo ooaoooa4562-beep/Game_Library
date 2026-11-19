@@ -1,6 +1,7 @@
 """Minesweeper: left click to reveal, right click to flag."""
 import random
 import pygame
+from game_art import draw_mine_tile, draw_flag, draw_mine
 
 SIZE, CELL, MINES = 10, 42, 15
 
@@ -36,14 +37,17 @@ def main():
         for y in range(SIZE):
             for x in range(SIZE):
                 p=(x,y); rect=(x*CELL,y*CELL,CELL-2,CELL-2)
-                color=(95,105,120) if p in opened else (55,75,95)
-                pygame.draw.rect(screen,color,rect,border_radius=4)
-                if p in flags: text="⚑"
-                elif p in mines and lost: text="*"
+                draw_mine_tile(screen,rect,p in opened)
+                if p in flags:
+                    draw_flag(screen,(x*CELL+CELL//2,y*CELL+CELL//2))
+                elif p in mines and lost:
+                    draw_mine(screen,(x*CELL+CELL//2,y*CELL+CELL//2),9)
                 elif p in opened:
-                    count=sum(n in mines for n in neighbors(x,y)); text=str(count) if count else ""
-                else: text=""
-                if text: screen.blit(font.render(text,True,(255,220,90)),(x*CELL+14,y*CELL+10))
+                    count=sum(n in mines for n in neighbors(x,y))
+                    if count:
+                        number_colors={1:(80,160,255),2:(80,190,100),3:(235,80,75),4:(130,90,210),5:(170,90,55),6:(60,180,180),7:(30,30,30),8:(120,120,120)}
+                        label=font.render(str(count),True,number_colors[count])
+                        screen.blit(label,label.get_rect(center=(x*CELL+CELL//2,y*CELL+CELL//2)))
         status="You win!" if won else "Game over" if lost else f"Mines: {MINES}   Flags: {len(flags)}"
         screen.blit(font.render(status,True,(245,245,245)),(10,SIZE*CELL+18))
         pygame.display.flip(); clock.tick(30)
