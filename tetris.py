@@ -1,6 +1,7 @@
 import pygame
 import random
 import sys
+from game_art import draw_tetris_block
 
 # --- Константы ---
 BLOCK_SIZE = 30
@@ -151,9 +152,7 @@ class Tetris:
 
 
 def draw_block(surface, x, y, color, size=BLOCK_SIZE):
-    rect = pygame.Rect(x, y, size, size)
-    pygame.draw.rect(surface, color, rect)
-    pygame.draw.rect(surface, WHITE, rect, 1)
+    draw_tetris_block(surface, x, y, color, size)
 
 
 def draw_grid_lines(surface):
