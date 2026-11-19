@@ -1,6 +1,7 @@
 """Frogger: cross the road and reach the top without being hit."""
 import random
 import pygame
+from game_art import draw_frog, draw_car
 
 W,H=640,600
 LANES=[(420,3),(360,-4),(300,3),(240,-3),(180,4)]
@@ -35,8 +36,9 @@ def main():
         screen.fill((25,90,55))
         pygame.draw.rect(screen,(55,55,60),(0,150,W,330))
         for y in [210,270,330,390,450]: pygame.draw.line(screen,(230,220,150),(0,y),(W,y),2)
-        for car,_ in cars: pygame.draw.rect(screen,(220,80,70),car,border_radius=6)
-        pygame.draw.rect(screen,(90,240,110),frog,border_radius=8)
+        car_colors=[(220,75,65),(65,145,225),(235,175,55),(150,90,190)]
+        for index,(car,_) in enumerate(cars): draw_car(screen,car,car_colors[index%len(car_colors)])
+        draw_frog(screen,frog,pygame.time.get_ticks()//150)
         screen.blit(font.render(f"Crossings: {score}   Arrow keys",True,(255,255,255)),(12,12))
         pygame.display.flip()
     pygame.quit()
