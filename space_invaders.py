@@ -1,5 +1,6 @@
 """Space Invaders: move, shoot and clear the alien formation."""
 import pygame
+from game_art import draw_player_ship, draw_invader
 import random
 
 WIDTH, HEIGHT = 720, 560
@@ -42,10 +43,14 @@ def main():
             elif bomb.top>HEIGHT: bombs.remove(bomb)
         if any(a.bottom >= player.top for a in aliens) or lives <= 0: running = False
         screen.fill(BLACK)
-        pygame.draw.rect(screen,GREEN,player,border_radius=6)
-        for alien in aliens: pygame.draw.rect(screen,RED,alien,border_radius=5)
-        for shot in shots: pygame.draw.rect(screen,WHITE,shot)
-        for bomb in bombs: pygame.draw.rect(screen,(255,190,60),bomb)
+        draw_player_ship(screen, player)
+        for index, alien in enumerate(aliens): draw_invader(screen, alien, pygame.time.get_ticks()//250 + index)
+        for shot in shots:
+            pygame.draw.rect(screen,(120,220,255),shot,border_radius=3)
+            pygame.draw.line(screen,WHITE,(shot.centerx,shot.top),(shot.centerx,shot.bottom),2)
+        for bomb in bombs:
+            pygame.draw.ellipse(screen,(255,120,55),bomb)
+            pygame.draw.circle(screen,(255,235,130),bomb.center,2)
         screen.blit(font.render(f"Score: {score}   Lives: {lives}   SPACE: fire",True,WHITE),(12,12))
         if not aliens: running = False
         pygame.display.flip()
