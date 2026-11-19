@@ -1,4 +1,5 @@
 import pygame
+from game_art import draw_snake_segment
 import random
 import sys
 
@@ -27,8 +28,8 @@ def random_food(snake):
             return pos
 
 
-def draw_cell(x, y, color):
-    pygame.draw.rect(screen, color, (x * CELL, y * CELL, CELL, CELL))
+def draw_cell(x, y, color, head=False, direction=(1, 0)):
+    draw_snake_segment(screen, (x * CELL, y * CELL, CELL, CELL), head, direction)
 
 
 def game_over(score):
@@ -103,9 +104,11 @@ def main():
 
         # --- Отрисовка ---
         screen.fill(BLACK)
-        draw_cell(food[0], food[1], RED)
+        pygame.draw.circle(screen, (90, 20, 20), (food[0]*CELL+CELL//2+2, food[1]*CELL+CELL//2+2), CELL//3)
+        pygame.draw.circle(screen, (245, 65, 75), (food[0]*CELL+CELL//2, food[1]*CELL+CELL//2), CELL//3)
+        pygame.draw.circle(screen, (255, 190, 190), (food[0]*CELL+CELL//2-3, food[1]*CELL+CELL//2-3), 3)
         for i, (x, y) in enumerate(snake):
-            draw_cell(x, y, GREEN if i == 0 else DARK_GREEN)
+            draw_cell(x, y, GREEN if i == 0 else DARK_GREEN, i == 0, direction)
 
         text = font.render(f"Счёт: {score}  Длина: {len(snake)}", True, WHITE)
         screen.blit(text, (10, 10))
