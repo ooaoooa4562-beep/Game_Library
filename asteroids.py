@@ -2,6 +2,7 @@
 import math
 import random
 import pygame
+from game_art import draw_asteroid
 
 W,H=800,600
 
@@ -47,8 +48,10 @@ def main():
         tip=(ship[0]+math.cos(angle)*18,ship[1]+math.sin(angle)*18)
         left=(ship[0]+math.cos(angle+2.5)*15,ship[1]+math.sin(angle+2.5)*15)
         right=(ship[0]+math.cos(angle-2.5)*15,ship[1]+math.sin(angle-2.5)*15)
-        pygame.draw.polygon(screen,(240,240,245),[tip,left,right],2)
-        for x,y,_,_,r in rocks: pygame.draw.circle(screen,(150,155,170),(int(x),int(y)),int(r),2)
+        pygame.draw.polygon(screen,(20,55,75),[tip,left,right])
+        pygame.draw.polygon(screen,(235,245,255),[tip,left,right],2)
+        pygame.draw.circle(screen,(80,200,235),(int(ship[0]),int(ship[1])),5)
+        for index,(x,y,_,_,r) in enumerate(rocks): draw_asteroid(screen,(int(x),int(y)),int(r),index)
         for b in bullets: pygame.draw.circle(screen,(255,220,100),(int(b[0]),int(b[1])),3)
         screen.blit(font.render(f"Score: {score}   Lives: {lives}   Arrows + SPACE",True,(255,255,255)),(12,12))
         if not rocks: running=False
