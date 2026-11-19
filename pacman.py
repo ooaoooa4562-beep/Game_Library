@@ -1,6 +1,7 @@
 """Pac-Man: collect every dot while avoiding the ghosts."""
 import random
 import pygame
+from game_art import draw_pacman, draw_ghost
 
 TILE = 24
 LEVEL = ["###################", "#........#........#", "#.##.###.#.###.##.#",
@@ -50,8 +51,10 @@ def main():
                 rect = (x*TILE,y*TILE,TILE,TILE)
                 if c == "#": pygame.draw.rect(screen,WALL,rect,border_radius=4)
                 elif c in ".o": pygame.draw.circle(screen,YELLOW,(x*TILE+12,y*TILE+12),3 if c=="." else 7)
-        pygame.draw.circle(screen,YELLOW,(player[0]*TILE+12,player[1]*TILE+12),10)
-        for x,y in ghosts: pygame.draw.circle(screen,RED,(x*TILE+12,y*TILE+12),10)
+        draw_pacman(screen, (player[0]*TILE+12, player[1]*TILE+12), 10, direction, pygame.time.get_ticks()//40)
+        ghost_colors = [(245,65,95),(80,205,245),(245,150,220)]
+        for index,(x,y) in enumerate(ghosts):
+            draw_ghost(screen, pygame.Rect(x*TILE+2,y*TILE+2,20,20), ghost_colors[index%len(ghost_colors)])
         screen.blit(font.render(f"Score {score}    Lives {lives}    R: restart",True,WHITE),(8,H-32))
         if not any("." in row or "o" in row for row in grid): running = False
         pygame.display.flip()
