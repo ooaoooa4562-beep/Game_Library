@@ -1,5 +1,6 @@
 """Checkers for two local players. Mandatory captures and multiple jumps."""
 import pygame
+from game_art import draw_checker_piece
 
 N,CELL=8,76
 W=N*CELL
@@ -50,9 +51,7 @@ def main():
                 if selected==(x,y): pygame.draw.rect(screen,(245,215,60),(x*CELL,y*CELL,CELL,CELL),4)
                 piece=board[y][x]
                 if piece:
-                    color=(220,70,65) if piece in (1,3) else (35,35,45)
-                    pygame.draw.circle(screen,color,(x*CELL+38,y*CELL+38),27)
-                    if piece in (3,4): pygame.draw.circle(screen,(240,210,90),(x*CELL+38,y*CELL+38),12,3)
+                    draw_checker_piece(screen,(x*CELL+38,y*CELL+38),1 if piece in (1,3) else 2,piece in (3,4))
         for x,y in moves: pygame.draw.circle(screen,(70,220,110),(x*CELL+38,y*CELL+38),8)
         screen.blit(font.render(("Red" if turn==1 else "Dark")+" to move",True,(255,255,255)),(12,W+12))
         pygame.display.flip(); clock.tick(30)
