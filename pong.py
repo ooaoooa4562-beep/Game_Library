@@ -1,5 +1,6 @@
 """Pong for two players. W/S and Up/Down control the paddles."""
 import pygame
+from game_art import draw_paddle, draw_ball
 
 WIDTH, HEIGHT = 800, 500
 
@@ -29,8 +30,8 @@ def main():
         if ball.right>WIDTH: score[0]+=1; ball.center=(WIDTH//2,HEIGHT//2); vx=-5
         screen.fill((8,12,25))
         for y in range(0,HEIGHT,24): pygame.draw.rect(screen,(80,90,110),(WIDTH//2-2,y,4,12))
-        pygame.draw.rect(screen,(240,240,240),left); pygame.draw.rect(screen,(240,240,240),right)
-        pygame.draw.ellipse(screen,(255,220,90),ball)
+        draw_paddle(screen,left,(110,190,255)); draw_paddle(screen,right,(255,125,115))
+        draw_ball(screen,ball,(255,220,90))
         screen.blit(font.render(f"{score[0]}     {score[1]}",True,(255,255,255)),(WIDTH//2-75,18))
         pygame.display.flip()
     pygame.quit()
