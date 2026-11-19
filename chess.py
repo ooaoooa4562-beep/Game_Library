@@ -1,6 +1,7 @@
 """Chess board with legal move validation through python-chess."""
 import sys
 import pygame
+from game_art import draw_chess_piece
 try:
     import chess
 except ImportError:
@@ -38,8 +39,8 @@ def main():
                 if sq==selected: pygame.draw.rect(screen,(240,210,60),rect,4)
                 piece=board.piece_at(sq)
                 if piece:
-                    glyph=font.render(PIECES[piece.symbol()],True,(20,20,20) if piece.color else (250,250,250))
-                    screen.blit(glyph,glyph.get_rect(center=(file*80+40,rank*80+40)))
+                    piece_color=(248,242,225) if piece.color else (45,50,65)
+                    draw_chess_piece(screen,(file*80+40,rank*80+40),piece_color,piece.symbol().upper())
         status="Game over: "+board.result() if board.is_game_over() else ("White" if board.turn else "Black")+" to move"
         screen.blit(small.render(status+"   Click a piece, then destination",True,(255,255,255)),(10,SIZE+12))
         pygame.display.flip(); clock.tick(30)
