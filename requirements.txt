@@ -1,0 +1,5 @@
+# Core dependency for the arcade games
+pygame>=2.5.0
+
+# Required only by chess.py
+python-chess>=1.999
