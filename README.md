@@ -48,9 +48,15 @@ python pacman.py
 
 Replace `pacman.py` with any game filename from the table.
 
+## Artwork
+
+- `game_art.py` contains shared hand-drawn sprites used by the games: characters, ghosts, vehicles, ships, gems, chess pieces, checkers, and arcade objects.
+- `thirddrop.py` keeps its own detailed jewel-rendering system.
+- Keep `game_art.py` beside the game scripts; the games import it directly.
+
 ## Notes
 
-- Each game is a standalone script; run one game at a time.
+- Each game is launched as a standalone script; run one game at a time.
 - Press Escape or close the game window to exit where supported.
 - Chess promotes a pawn to a queen automatically.
 - These projects are educational recreations of classic arcade and board-game mechanics.
