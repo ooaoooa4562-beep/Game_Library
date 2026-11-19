@@ -1,5 +1,6 @@
 import pygame
 import sys
+from game_art import draw_mario, draw_goomba
 
 # Инициализация
 pygame.init()
@@ -86,23 +87,7 @@ class Player:
             self.anim += 1
 
     def draw(self, surf, cam_x):
-        x = self.rect.x - cam_x
-        y = self.rect.y
-        # Тело (комбинезон)
-        pygame.draw.rect(surf, RED, (x + 4, y + 20, 24, 20))
-        # Голова
-        pygame.draw.rect(surf, (255, 200, 150), (x + 6, y, 22, 20))
-        # Кепка
-        pygame.draw.rect(surf, RED, (x + 4, y - 2, 26, 8))
-        # Глаз
-        eye_x = x + 18 if self.facing == 1 else x + 10
-        pygame.draw.rect(surf, BLACK, (eye_x, y + 6, 4, 5))
-        # Усы
-        pygame.draw.rect(surf, BROWN, (x + 12, y + 14, 10, 3))
-        # Ноги
-        leg_offset = (self.anim // 6) % 2 * 4 if self.on_ground and self.vx != 0 else 0
-        pygame.draw.rect(surf, BROWN, (x + 4, y + 38, 10, 4))
-        pygame.draw.rect(surf, BROWN, (x + 18 + leg_offset, y + 38, 10, 4))
+        draw_mario(surf, x, y, self.facing, self.anim if self.vx else 0)
 
 
 class Enemy:
@@ -142,13 +127,7 @@ class Enemy:
             if self.squash_timer > 0:
                 pygame.draw.rect(surf, BROWN, (x, y + 20, 30, 8))
             return
-        # Гриб-враг
-        pygame.draw.rect(surf, BROWN, (x + 2, y + 12, 26, 16))
-        pygame.draw.ellipse(surf, RED, (x, y, 30, 18))
-        pygame.draw.circle(surf, WHITE, (x + 8, y + 7), 4)
-        pygame.draw.circle(surf, WHITE, (x + 22, y + 7), 4)
-        pygame.draw.circle(surf, BLACK, (x + 8, y + 7), 2)
-        pygame.draw.circle(surf, BLACK, (x + 22, y + 7), 2)
+        draw_goomba(surf, self.rect.move(-cam_x, 0))
 
 
 class Coin:
