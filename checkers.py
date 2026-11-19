@@ -23,7 +23,7 @@ def main():
         for dx,dy in directions:
             nx,ny=x+dx,y+dy
             if 0<=nx<N and 0<=ny<N and board[ny][nx]==0: result.append((nx,ny))
-            elif 0<=nx+dx<N and 0<=ny+dy<N and board[ny][nx] and board[ny][nx] not in (piece,3 if side==1 else 4) and board[ny+dy][nx+dx]==0:
+            elif 0<=nx+dx<N and 0<=ny+dy<N and board[ny][nx] and (board[ny][nx] in (2,4) if side==1 else board[ny][nx] in (1,3)) and board[ny+dy][nx+dx]==0:
                 result.append((nx+dx,ny+dy))
         return result
     while running:
