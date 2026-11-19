@@ -1,5 +1,6 @@
 """Sokoban: push every crate onto a goal. Undo with Z, reset with R."""
 import pygame
+from game_art import draw_crate, draw_sokoban_player
 
 LEVEL=["##########","#   #    #","# $ # .  #","# $   .  #","#   ##   #","# .  $   #","#      @ #","##########"]
 TILE=56
@@ -40,8 +41,8 @@ def main():
                 color=(65,75,95) if p in walls else (38,45,55)
                 pygame.draw.rect(screen,color,rect)
                 if p in goals: pygame.draw.circle(screen,(230,190,70),(x*TILE+28,y*TILE+28),10)
-        for x,y in boxes: pygame.draw.rect(screen,(180,115,65),(x*TILE+7,y*TILE+7,42,42),border_radius=6)
-        pygame.draw.circle(screen,(90,210,245),(player[0]*TILE+28,player[1]*TILE+28),19)
+        for x,y in boxes: draw_crate(screen,pygame.Rect(x*TILE+7,y*TILE+7,42,42))
+        draw_sokoban_player(screen,(player[0]*TILE+28,player[1]*TILE+28))
         done=goals.issubset(boxes)
         screen.blit(font.render("Solved!" if done else "Arrows: move   Z: undo   R: reset",True,(255,255,255)),(10,len(LEVEL)*TILE+12))
         pygame.display.flip(); clock.tick(30)
