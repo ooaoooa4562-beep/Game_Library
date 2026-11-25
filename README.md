@@ -1,62 +1,59 @@
 # Game Library
 
-A collection of classic games written in Python with Pygame.
+A growing collection of Python games built with Pygame.
 
 ## Requirements
 
-- Python 3.10 or newer
+- Python 3.10+
 - Pygame
 
-Install the main dependency:
+Install dependencies:
 
 ```bash
-python -m pip install pygame
+python -m pip install -r requirements.txt
 ```
 
-Chess uses the separate `python-chess` rules engine:
+## Classic games
 
-```bash
-python -m pip install python-chess
-```
+| File | Game |
+|---|---|
+| `mario.py` | Mario Platformer |
+| `tetris.py` | Tetris |
+| `thirddrop.py` | Three Drop (match-three) |
+| `zmeyka.py` | Snake |
+| `pacman.py` | Pac-Man |
+| `space_invaders.py` | Space Invaders |
+| `breakout.py` | Breakout |
+| `pong.py` | Pong |
+| `minesweeper.py` | Minesweeper |
+| `frogger.py` | Frogger |
+| `sokoban.py` | Sokoban |
+| `chess.py` | Chess (requires python-chess) |
+| `checkers.py` | Checkers |
+| `asteroids.py` | Asteroids |
 
-## Games
+## New additions
 
-| File | Game | Controls |
+| File | Game | How to play |
 |---|---|---|
-| `mario.py` | Mario Platformer | Arrow keys / WASD, Space to jump |
-| `tetris.py` | Tetris | See in-game instructions |
-| `thirddrop.py` | Three Drop (match-three) | Mouse |
-| `zmeyka.py` | Snake | WASD |
-| `pacman.py` | Pac-Man | Arrow keys |
-| `space_invaders.py` | Space Invaders | Left/Right, Space to fire |
-| `breakout.py` | Breakout | Left/Right |
-| `pong.py` | Pong (two players) | W/S and Up/Down |
-| `minesweeper.py` | Minesweeper | Left click to reveal, right click to flag |
-| `frogger.py` | Frogger | Arrow keys |
-| `sokoban.py` | Sokoban | Arrow keys, Z to undo, R to reset |
-| `chess.py` | Chess (two players) | Click a piece, then its destination |
-| `checkers.py` | Checkers (two players) | Click a piece, then its destination |
-| `asteroids.py` | Asteroids | Left/Right to rotate, Up to thrust, Space to shoot |
+| `arcade_50.py` | 50 mini-game arcade collection | Open the menu, choose one of 50 challenges, move with WASD/arrows; Space fires in shooting challenges |
+| `tank_battle.py` | Tank Battle | WASD/arrows to drive and turn, Space to fire, R to restart |
 
-## Run a game
+The 50 challenges are launched from one menu-driven collection, so you do not need to open 50 separate Python files.
 
-Open a terminal in this folder and run the file you want:
+## Run
 
 ```bash
-python pacman.py
+python tank_battle.py
+python arcade_50.py
 ```
 
-Replace `pacman.py` with any game filename from the table.
+Or launch any classic game by running its Python file.
 
 ## Artwork
 
-- `game_art.py` contains shared hand-drawn sprites used by the games: characters, ghosts, vehicles, ships, gems, chess pieces, checkers, and arcade objects.
-- `thirddrop.py` keeps its own detailed jewel-rendering system.
-- Keep `game_art.py` beside the game scripts; the games import it directly.
+- `game_art.py` contains shared hand-drawn Pygame sprites.
+- `thirddrop.py` has its own jewel-rendering system.
+- Keep `game_art.py` beside the game scripts that import it.
 
-## Notes
-
-- Each game is launched as a standalone script; run one game at a time.
-- Press Escape or close the game window to exit where supported.
-- Chess promotes a pawn to a queen automatically.
-- These projects are educational recreations of classic arcade and board-game mechanics.
+Run one game at a time. Press Escape or close the window to exit.
