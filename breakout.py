@@ -24,11 +24,13 @@ def main():
         paddle.x += (keys[pygame.K_RIGHT]-keys[pygame.K_LEFT])*8
         paddle.clamp_ip(screen.get_rect())
         ball.x += velocity[0]; ball.y += velocity[1]
-        if ball.left<=0 or ball.right>=WIDTH: velocity[0] *= -1
-        if ball.top<=0: velocity[1] = abs(velocity[1])
+        if ball.left<=0: ball.left=0; velocity[0]=abs(velocity[0])
+        if ball.right>=WIDTH: ball.right=WIDTH; velocity[0]=-abs(velocity[0])
+        if ball.top<=0: ball.top=0; velocity[1] = abs(velocity[1])
         if ball.colliderect(paddle) and velocity[1]>0:
+            ball.bottom=paddle.top
             velocity[1] = -abs(velocity[1])
-            velocity[0] += (ball.centerx-paddle.centerx)//18
+            velocity[0] = max(-8,min(8,velocity[0]+(ball.centerx-paddle.centerx)//18))
         hit = next((brick for brick in bricks if ball.colliderect(brick)),None)
         if hit:
             bricks.remove(hit); velocity[1] *= -1; score += 10

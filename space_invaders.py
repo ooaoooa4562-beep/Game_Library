@@ -36,7 +36,9 @@ def main():
         if aliens and (min(a.left for a in aliens)<8 or max(a.right for a in aliens)>WIDTH-8):
             direction *= -1
             for alien in aliens: alien.y += 18
-        if random.randrange(90)==0 and aliens: bombs.append(pygame.Rect(random.choice(aliens).centerx,80,5,14))
+        if random.randrange(90)==0 and aliens:
+            shooter=random.choice(aliens)
+            bombs.append(pygame.Rect(shooter.centerx,shooter.bottom,5,14))
         for bomb in bombs[:]:
             bomb.y += 5
             if bomb.colliderect(player): bombs.remove(bomb); lives -= 1

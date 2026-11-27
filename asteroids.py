@@ -13,7 +13,7 @@ def main():
     ship=[W/2,H/2]; angle=0; velocity=[0.0,0.0]; bullets=[]; rocks=[]
     for _ in range(8):
         rocks.append([random.randrange(W),random.randrange(H),random.uniform(-2,2),random.uniform(-2,2),random.randint(24,38)])
-    score=0; lives=3; cooldown=0; running=True
+    score=0; lives=3; cooldown=0; running=True; shield=120
     while running:
         clock.tick(60)
         for e in pygame.event.get():
@@ -31,7 +31,8 @@ def main():
         velocity=[v*0.99 for v in velocity]; cooldown=max(0,cooldown-1)
         for bullet in bullets[:]:
             bullet[0]=(bullet[0]+bullet[2])%W; bullet[1]=(bullet[1]+bullet[3])%H
-            bullet.append(bullet[4]+1 if len(bullet)>4 else 1)
+            if len(bullet) == 4: bullet.append(0)
+            bullet[4] += 1
             if bullet[4]>70: bullets.remove(bullet); continue
             for rock in rocks[:]:
                 if math.hypot(bullet[0]-rock[0],bullet[1]-rock[1])<rock[4]:
@@ -41,9 +42,10 @@ def main():
                     break
         for rock in rocks:
             rock[0]=(rock[0]+rock[2])%W; rock[1]=(rock[1]+rock[3])%H
-            if math.hypot(ship[0]-rock[0],ship[1]-rock[1])<rock[4]+10:
-                lives-=1; ship=[W/2,H/2]; velocity=[0,0]
+            if shield == 0 and math.hypot(ship[0]-rock[0],ship[1]-rock[1])<rock[4]+10:
+                shield=120; lives-=1; ship=[W/2,H/2]; velocity=[0,0]
                 if lives<=0: running=False
+        shield=max(0,shield-1)
         screen.fill((5,7,18))
         tip=(ship[0]+math.cos(angle)*18,ship[1]+math.sin(angle)*18)
         left=(ship[0]+math.cos(angle+2.5)*15,ship[1]+math.sin(angle+2.5)*15)

@@ -10,7 +10,7 @@ def main():
     screen=pygame.display.set_mode((SIZE*CELL,SIZE*CELL+70))
     pygame.display.set_caption("Minesweeper")
     clock=pygame.time.Clock(); font=pygame.font.Font(None,30)
-    mines=set(random.sample([(x,y) for x in range(SIZE) for y in range(SIZE)],MINES))
+    mines=set(); started=None
     opened=set(); flags=set(); lost=False; won=False
     def neighbors(x,y):
         return [(x+dx,y+dy) for dx in (-1,0,1) for dy in (-1,0,1)
@@ -24,12 +24,21 @@ def main():
     while running:
         for e in pygame.event.get():
             if e.type==pygame.QUIT: running=False
+            if e.type==pygame.KEYDOWN:
+                if e.key==pygame.K_ESCAPE: running=False
+                if e.key==pygame.K_r:
+                    mines.clear(); opened.clear(); flags.clear(); lost=False; won=False; started=None
             if e.type==pygame.MOUSEBUTTONDOWN and not (lost or won) and e.pos[1]<SIZE*CELL:
                 x,y=e.pos[0]//CELL,e.pos[1]//CELL
                 if e.button==3:
                     if (x,y) in flags: flags.remove((x,y))
-                    else: flags.add((x,y))
+                    elif (x,y) not in opened and len(flags)<MINES: flags.add((x,y))
                 elif e.button==1:
+                    if (x,y) in flags: continue
+                    if started is None:
+                        safe=set(neighbors(x,y)) | {(x,y)}
+                        mines.update(random.sample([(a,b) for a in range(SIZE) for b in range(SIZE) if (a,b) not in safe],MINES))
+                        started=pygame.time.get_ticks()
                     if (x,y) in mines: lost=True
                     else: reveal(x,y)
         won=len(opened)==SIZE*SIZE-MINES
@@ -50,6 +59,7 @@ def main():
                         screen.blit(label,label.get_rect(center=(x*CELL+CELL//2,y*CELL+CELL//2)))
         status="You win!" if won else "Game over" if lost else f"Mines: {MINES}   Flags: {len(flags)}"
         screen.blit(font.render(status,True,(245,245,245)),(10,SIZE*CELL+18))
+        screen.blit(font.render('R: restart | ESC: exit',True,(190,200,215)),(10,SIZE*CELL+43))
         pygame.display.flip(); clock.tick(30)
     pygame.quit()
 
