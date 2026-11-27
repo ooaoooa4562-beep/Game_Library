@@ -22,14 +22,16 @@ def draw_tank(surface,x,y,angle,color):
     rotated=pygame.transform.rotate(body,-angle)
     surface.blit(rotated,rotated.get_rect(center=(x,y)))
 
-def main():
+def round_game():
     random.seed()
     player=[W/2,H-85,0]
     enemies=[[random.randint(70,W-70),random.randint(70,260),180] for _ in range(5)]
     bullets=[]; enemy_bullets=[]; walls=[]
     for _ in range(16):
         x=random.randrange(50,W-90,40); y=random.randrange(90,H-120,40)
-        if abs(x-W/2)>100:walls.append(pygame.Rect(x,y,random.choice([38,70]),34))
+        candidate=pygame.Rect(x,y,random.choice([38,70]),34)
+        if abs(x-W/2)>100 and not any(candidate.inflate(48,48).collidepoint(e[0],e[1]) for e in enemies):
+            walls.append(candidate)
     hp=5; score=0; tick=0; game_over=False; victory=False
     while True:
         clock.tick(60); tick+=1
@@ -38,11 +40,12 @@ def main():
             if e.type==pygame.KEYDOWN:
                 if e.key==pygame.K_ESCAPE:pygame.quit();return
                 if e.key==pygame.K_r:
-                    return main()
+                    return True
                 if e.key==pygame.K_SPACE and not game_over and not victory:
                     a=math.radians(player[2]); bullets.append([player[0]+math.sin(a)*29,player[1]-math.cos(a)*29,a,0])
         keys=pygame.key.get_pressed()
         if not game_over and not victory:
+            old_position=player[:2]
             if keys[pygame.K_a] or keys[pygame.K_LEFT]:player[2]=(player[2]+3)%360
             if keys[pygame.K_d] or keys[pygame.K_RIGHT]:player[2]=(player[2]-3)%360
             if keys[pygame.K_w] or keys[pygame.K_UP]:
@@ -50,21 +53,28 @@ def main():
             if keys[pygame.K_s] or keys[pygame.K_DOWN]:
                 a=math.radians(player[2]); player[0]-=math.sin(a)*1.6; player[1]+=math.cos(a)*1.6
             player[0]=max(28,min(W-28,player[0]));player[1]=max(28,min(H-28,player[1]))
+            if any(w.inflate(40,40).collidepoint(*player[:2]) for w in walls):
+                player[:2]=old_position
             for enemy in enemies:
+                old_enemy=enemy[:2]
                 dx=player[0]-enemy[0];dy=player[1]-enemy[1]
                 enemy[2]=(math.degrees(math.atan2(dx,-dy)))%360
                 dist=math.hypot(dx,dy)
                 if dist>145:
                     a=math.radians(enemy[2]); enemy[0]+=math.sin(a)*0.85;enemy[1]-=math.cos(a)*0.85
+                if any(w.inflate(40,40).collidepoint(*enemy[:2]) for w in walls):
+                    enemy[:2]=old_enemy
                 if tick%95==0:
                     a=math.radians(enemy[2]);enemy_bullets.append([enemy[0]+math.sin(a)*25,enemy[1]-math.cos(a)*25,a])
             for b in bullets:
                 b[0]+=math.sin(b[2])*7;b[1]-=math.cos(b[2])*7
                 for wall in walls:
                     if wall.collidepoint(b[0],b[1]):b[3]=1
+                if b[3]: continue
                 for enemy in enemies[:]:
                     if math.hypot(b[0]-enemy[0],b[1]-enemy[1])<24:
                         enemies.remove(enemy);score+=100;b[3]=1
+                        break
             bullets=[b for b in bullets if -10<b[0]<W+10 and -10<b[1]<H+10 and not b[3]]
             for b in enemy_bullets:
                 b[0]+=math.sin(b[2])*4;b[1]-=math.cos(b[2])*4
@@ -97,4 +107,6 @@ def main():
             screen.blit(FONT.render("Press R to play again or ESC to quit",True,WHITE),(320,320))
         pygame.display.flip()
 
-if __name__=="__main__":main()
+if __name__=="__main__":
+    while round_game():
+        pass

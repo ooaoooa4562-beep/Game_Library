@@ -23,9 +23,11 @@ def main():
         right.y += (keys[pygame.K_DOWN]-keys[pygame.K_UP])*7
         left.clamp_ip(screen.get_rect()); right.clamp_ip(screen.get_rect())
         ball.x+=vx; ball.y+=vy
-        if ball.top<=0 or ball.bottom>=HEIGHT: vy *= -1
-        if ball.colliderect(left) and vx<0: vx=abs(vx); vy += (ball.centery-left.centery)//18
-        if ball.colliderect(right) and vx>0: vx=-abs(vx); vy += (ball.centery-right.centery)//18
+        if ball.top<=0: ball.top=0; vy=abs(vy)
+        if ball.bottom>=HEIGHT: ball.bottom=HEIGHT; vy=-abs(vy)
+        if ball.colliderect(left) and vx<0: ball.left=left.right; vx=abs(vx); vy += (ball.centery-left.centery)//18
+        if ball.colliderect(right) and vx>0: ball.right=right.left; vx=-abs(vx); vy += (ball.centery-right.centery)//18
+        vy=max(-9,min(9,vy))
         if ball.left<0: score[1]+=1; ball.center=(WIDTH//2,HEIGHT//2); vx=5
         if ball.right>WIDTH: score[0]+=1; ball.center=(WIDTH//2,HEIGHT//2); vx=-5
         screen.fill((8,12,25))

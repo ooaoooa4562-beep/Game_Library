@@ -87,7 +87,7 @@ class Player:
             self.anim += 1
 
     def draw(self, surf, cam_x):
-        draw_mario(surf, x, y, self.facing, self.anim if self.vx else 0)
+        draw_mario(surf, self.rect.x - cam_x, self.rect.y, self.facing, self.anim if self.vx else 0)
 
 
 class Enemy:
@@ -186,7 +186,7 @@ class Level:
             if p.kind == "ground":
                 pygame.draw.rect(surf, GROUND_COLOR, (px, p.rect.y, p.rect.w, p.rect.h))
                 pygame.draw.rect(surf, (100, 50, 10), (px, p.rect.y, p.rect.w, p.rect.h), 3)
-                for gx in range(0, p.rect.w, 20):
+                for gx in range(max(0, (-px)//20*20), min(p.rect.w, WIDTH-px+20), 20):
                     pygame.draw.rect(surf, GREEN, (px + gx, p.rect.y, 4, 6))
             elif p.kind == "brick":
                 pygame.draw.rect(surf, BRICK, (px, p.rect.y, p.rect.w, p.rect.h))
@@ -412,6 +412,7 @@ def run_level(level, state):
                 hurt_timer = 0
         else:
             player.update(level.platforms)
+            player.rect.x = max(0, min(level.width-player.rect.width, player.rect.x))
 
             for e in level.enemies:
                 e.update(level.platforms)

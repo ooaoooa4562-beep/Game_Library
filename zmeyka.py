@@ -22,10 +22,9 @@ font = pygame.font.SysFont("Arial", 24)
 
 
 def random_food(snake):
-    while True:
-        pos = (random.randrange(COLS), random.randrange(ROWS))
-        if pos not in snake:
-            return pos
+    occupied=set(snake)
+    free=[(x,y) for x in range(COLS) for y in range(ROWS) if (x,y) not in occupied]
+    return random.choice(free) if free else None
 
 
 def draw_cell(x, y, color, head=False, direction=(1, 0)):
@@ -41,6 +40,7 @@ def game_over(score):
     pygame.display.flip()
 
     while True:
+        clock.tick(30)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit(); sys.exit()
@@ -51,7 +51,7 @@ def game_over(score):
                     pygame.quit(); sys.exit()
 
 
-def main():
+def round_game():
     snake = [(COLS // 2, ROWS // 2),
              (COLS // 2 - 1, ROWS // 2),
              (COLS // 2 - 2, ROWS // 2)]
@@ -87,10 +87,8 @@ def main():
         new_head = (new_head[0] % COLS, new_head[1] % ROWS)
 
         # Столкновение с собой
-        if new_head in snake and new_head != food:
-            if game_over(score):
-                return main()
-            return
+        if new_head in (snake if new_head == food else snake[:-1]):
+            return game_over(score)
 
         snake.insert(0, new_head)
 
@@ -98,6 +96,8 @@ def main():
         if new_head == food:
             score += 10
             food = random_food(snake)
+            if food is None: return game_over(score)
+            speed=min(22,10+score//50)
             # хвост НЕ убираем → змейка растёт
         else:
             snake.pop()
@@ -116,4 +116,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    while round_game():
+        pass

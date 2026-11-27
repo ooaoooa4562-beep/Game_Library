@@ -14,7 +14,7 @@ ROWS, COLS = len(LEVEL), len(LEVEL[0])
 W, H = COLS*TILE, ROWS*TILE+42
 WALL, BG, YELLOW, WHITE, RED = (20,35,180), (5,5,20), (255,220,0), (240,240,240), (240,70,80)
 
-def main():
+def round_game():
     pygame.init()
     screen = pygame.display.set_mode((W,H))
     pygame.display.set_caption("Pac-Man")
@@ -32,7 +32,7 @@ def main():
             if e.type == pygame.KEYDOWN:
                 queued = {pygame.K_LEFT:(-1,0), pygame.K_RIGHT:(1,0), pygame.K_UP:(0,-1), pygame.K_DOWN:(0,1)}.get(e.key, queued)
                 if e.key == pygame.K_ESCAPE: running = False
-                if e.key == pygame.K_r: return main()
+                if e.key == pygame.K_r: return True
         if open_cell(player[0]+queued[0], player[1]+queued[1]): direction = queued
         nx, ny = player[0]+direction[0], player[1]+direction[1]
         if open_cell(nx,ny): player = [nx,ny]
@@ -60,4 +60,6 @@ def main():
         pygame.display.flip()
     pygame.quit()
 
-if __name__ == "__main__": main()
+if __name__ == "__main__":
+    while round_game():
+        pass

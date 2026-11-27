@@ -64,14 +64,21 @@ class Piece:
 class Tetris:
     def __init__(self):
         self.grid = [[None for _ in range(COLS)] for _ in range(ROWS)]
-        self.current = Piece(random.randint(0, len(SHAPES) - 1))
-        self.next_piece = Piece(random.randint(0, len(SHAPES) - 1))
+        self.bag = []
+        self.current = self.take_piece()
+        self.next_piece = self.take_piece()
         self.score = 0
         self.lines = 0
         self.level = 1
         self.game_over = False
         self.fall_time = 0
         self.fall_speed = 500  # мс
+
+    def take_piece(self):
+        if not self.bag:
+            self.bag = list(range(len(SHAPES)))
+            random.shuffle(self.bag)
+        return Piece(self.bag.pop())
 
     def valid_position(self, shape, offset_x, offset_y):
         for y, row in enumerate(shape):
@@ -110,7 +117,7 @@ class Tetris:
 
     def spawn_new_piece(self):
         self.current = self.next_piece
-        self.next_piece = Piece(random.randint(0, len(SHAPES) - 1))
+        self.next_piece = self.take_piece()
         if not self.valid_position(self.current.shape, self.current.x, self.current.y):
             self.game_over = True
 
@@ -183,6 +190,8 @@ def main():
     big_font = pygame.font.SysFont("consolas", 40, bold=True)
 
     game = Tetris()
+    paused = False
+    pygame.key.set_repeat(180, 65)
 
     while True:
         dt = clock.tick(60)
@@ -197,6 +206,15 @@ def main():
                     pygame.quit()
                     sys.exit()
 
+                if event.key == pygame.K_p:
+                    paused = not paused
+                    continue
+                if event.key == pygame.K_r:
+                    game = Tetris()
+                    paused = False
+                    continue
+                if paused:
+                    continue
                 if not game.game_over:
                     if event.key == pygame.K_LEFT:
                         game.move(-1, 0)
@@ -212,7 +230,8 @@ def main():
                     if event.key == pygame.K_r:
                         game = Tetris()
 
-        game.update(dt)
+        if not paused:
+            game.update(dt)
 
         # --- Отрисовка ---
         screen.fill(BLACK)
@@ -223,6 +242,15 @@ def main():
                 if game.grid[y][x]:
                     draw_block(screen, x * BLOCK_SIZE, y * BLOCK_SIZE,
                                game.grid[y][x])
+
+        if not game.game_over:
+            landing = game.current.y
+            while game.valid_position(game.current.shape, game.current.x, landing+1):
+                landing += 1
+            for y, row in enumerate(game.current.shape):
+                for x, cell in enumerate(row):
+                    if cell:
+                        pygame.draw.rect(screen, game.current.color, ((game.current.x+x)*BLOCK_SIZE+2,(landing+y)*BLOCK_SIZE+2,BLOCK_SIZE-4,BLOCK_SIZE-4), 2)
 
         # Текущая фигура
         if not game.game_over:
@@ -270,6 +298,8 @@ def main():
             screen.blit(restart, (WIDTH // 2 - restart.get_width() // 2,
                                   HEIGHT // 2 + 20))
 
+        if paused:
+            screen.blit(big_font.render('PAUSE', True, WHITE), (80, HEIGHT//2))
         pygame.display.flip()
 
 
